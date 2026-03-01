@@ -21,20 +21,28 @@ class DatabaseHelper {
       'title': title,
       'description': description,
     });
-    if(check == 0) {
-       GetSnackBar(
-        title: 'Error',
-        message: 'Failed to insert data',
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 2),
+    if(check > 0) {
+      Get.showSnackbar(
+        GetSnackBar(
+          title: 'Success',
+          message: 'Note added successfully',
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
       );
     } else {
-      GetSnackBar(
-        title: 'success',
-        message: 'successfully  inserted data',
-        backgroundColor: Colors.blue,
-        duration: Duration(seconds: 2),
+      Get.showSnackbar(
+        GetSnackBar(
+          title: 'Error',
+          message: 'Failed to insert data',
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
       );
     }
+  }
+  Future<List<Map>> getData() async{
+    var db = await database();
+    return await db.rawQuery('SELECT * FROM notes');
   }
 }

@@ -1,13 +1,30 @@
 import 'package:get/get.dart';
+import 'package:note_app/model/note_model.dart';
 import 'package:note_app/service/note_service.dart';
 
 class NoteController extends GetxController {
   var noteService = NoteService();
-  
-  addNote(String title, String description) {
-     noteService.addNote(title, description);
+  var noteModelList = <NoteModel>[].obs;
+  RxBool isGettingNotes = false.obs;
+
+  void getNotes() async{
+    try{
+      isGettingNotes(true);
+      var notes = await noteService.getData();
+      noteModelList.value = notes;
+    } catch(e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isGettingNotes(false);
+    }
   }
-  getNotes() {
-     noteService.getData();
+
+  void addNote(String title, String description) async {
+    await noteService.addNote(title, description);
+    getNotes();
+  }
+  onInit() {
+    super.onInit();
+    getNotes();
   }
 }

@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:note_app/controller/note_controller.dart';
 
-class FormScreen extends StatelessWidget {
+class FormScreen extends StatefulWidget {
   const FormScreen({super.key});
 
   @override
+  State<FormScreen> createState() => _FormScreenState();
+}
+
+class _FormScreenState extends State<FormScreen> {
+  TextEditingController titleController = TextEditingController();
+  TextEditingController contentController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
+    var noteController = Get.find<NoteController>();
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Note'),
@@ -16,6 +26,7 @@ class FormScreen extends StatelessWidget {
           spacing: 10,
           children: [
             TextField(
+              controller: titleController,
               decoration: InputDecoration(
                 labelText: 'Title',
                 border: OutlineInputBorder(),
@@ -47,6 +58,7 @@ class FormScreen extends StatelessWidget {
               ),
             ),
             TextField(
+              controller: contentController,
               decoration: InputDecoration(
                 labelText: 'Content',
                 border: OutlineInputBorder(),
@@ -56,7 +68,8 @@ class FormScreen extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () {
-                  // Action to save the note
+                  noteController.addNote(titleController.text, contentController.text);
+                  Navigator.pop(context);
                 },
                 child: Text('Save'),
               ),

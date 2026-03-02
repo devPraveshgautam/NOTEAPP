@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:note_app/view/pages/description.dart';
 
 class NoteCard extends StatelessWidget {
-  const NoteCard({super.key,required this.title,required this.description,});
+  const NoteCard({super.key,required this.title,required this.description, required this.id});
   final String title;
   final String description;
+  final int id;
  
 
   @override
@@ -37,9 +38,30 @@ class NoteCard extends StatelessWidget {
               fit: FlexFit.tight,
               child: SizedBox(
                 width: double.infinity,
-                child: Image.asset(
-                  'assets/no_image.png',
-                  fit: BoxFit.contain,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    
+                    Positioned(
+                      
+                      child: Image.asset(
+                      'assets/no_image.png',
+                      fit: BoxFit.contain,
+                                        ),
+                    ),
+                    Positioned(
+                      top: 3,
+                      left: 5,
+                      child: Text(id.toString(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      )
+                      
+                      ),
+                  ],
                 ),
               ),
             ),

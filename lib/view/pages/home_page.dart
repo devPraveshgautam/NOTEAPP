@@ -9,11 +9,9 @@ class HomePage extends StatefulWidget {
 
   @override
   State<HomePage> createState() => _HomePageState();
-  
 }
 
 class _HomePageState extends State<HomePage> {
-  
   @override
   void initState() {
     super.initState();
@@ -24,34 +22,35 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var noteController = Get.find<NoteController>();
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Note App'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text('Note App'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-            itemCount: 10,
-          itemBuilder: (context, index) {
-          return NoteCard(
-             
-            title: 'Note Title ${index + 1}', 
-            description: 'This is the description for note ${index+1}.',
-          );
-        }),
+        child: Obx(() => noteController.isGettingNotes.value? Center(child: CircularProgressIndicator()) :
+          ListView.builder(
+            physics: BouncingScrollPhysics(),
+            itemCount: noteController.noteModelList.length,
+            itemBuilder: (context, index) {
+              var note = noteController.noteModelList[index];
+              return NoteCard(
+                title: note.title ?? 'No Title',
+                description:
+                    note.description ??
+                    'No Description',
+                    id: note.id ?? 0,
+              );
+            },
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => FormScreen()),
-            // );
-            await noteController.addNote('New Note', 'This is a new note description');
-            noteController.getNotes();
-          },
-          child: Icon(Icons.add),
-        ),
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FormScreen()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

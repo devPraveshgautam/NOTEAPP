@@ -1,13 +1,18 @@
+import 'package:get/get.dart';
 import 'package:note_app/helper/data_helper.dart';
+import 'package:note_app/model/note_model.dart';
 
 class NoteService {
   var dbhelper = DatabaseHelper();
-  Future<void> getData() async {
+  Future<List<NoteModel>> getData() async {
     try {
       var data = await dbhelper.getData();
-      print(data);
+      return data.map((note) {
+        return NoteModel.fromJson(note as Map<String, dynamic>);
+      }).toList();
     } catch (e) {
-      print('Error fetching data: $e');
+      Get.snackbar("Error", e.toString());
+      return [];
     }
     // return data;
   }

@@ -27,7 +27,7 @@ class DatabaseHelper {
           title: 'Success',
           message: 'Note added successfully',
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
         ),
       );
     } else {
@@ -44,5 +44,9 @@ class DatabaseHelper {
   Future<List<Map>> getData() async{
     var db = await database();
     return await db.rawQuery('SELECT * FROM notes');
+  }
+  Future<void> deleteData(int id) async {
+    var db = await database();
+    await db.rawDelete('DELETE FROM notes where id = ?', [id]);
   }
 }

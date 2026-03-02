@@ -11,7 +11,7 @@ class NoteService {
         return NoteModel.fromJson(note as Map<String, dynamic>);
       }).toList();
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", e.toString(), duration: Duration(seconds: 1));
       return [];
     }
     // return data;
@@ -21,7 +21,16 @@ class NoteService {
     try {
       await dbhelper.insertData(title, description);
     } catch (e) {
-      print('Error adding note: $e');
+      Get.snackbar("Error", e.toString(), duration: Duration(seconds: 1));
+    }
+  }
+
+  Future<void> deleteNote(int id) async {
+    try {
+      await dbhelper.deleteData(id);
+      Get.snackbar(" Deleted Successfully", "", duration: Duration(seconds: 1));
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
     }
   }
 }

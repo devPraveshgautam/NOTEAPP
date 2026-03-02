@@ -13,7 +13,7 @@ class NoteController extends GetxController {
       var notes = await noteService.getData();
       noteModelList.value = notes;
     } catch(e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", e.toString(), duration: Duration(seconds: 1));
     } finally {
       isGettingNotes(false);
     }
@@ -21,6 +21,10 @@ class NoteController extends GetxController {
 
   void addNote(String title, String description) async {
     await noteService.addNote(title, description);
+    getNotes();
+  }
+  void deleteNote(int id) async {
+    await noteService.deleteNote(id);
     getNotes();
   }
   onInit() {

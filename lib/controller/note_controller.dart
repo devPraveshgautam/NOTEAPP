@@ -19,15 +19,23 @@ class NoteController extends GetxController {
     }
   }
 
-  void addNote(String title, String description) async {
-    await noteService.addNote(title, description);
+  Future<void> addNote(String title, String description, {String? imagePath}) async {
+    await noteService.addNote(title, description, imagePath: imagePath);
     getNotes();
   }
-  void deleteNote(int id) async {
+
+  Future<void> updateNote(int id, String title, String description, {String? imagePath}) async {
+    await noteService.updateNote(id, title, description, imagePath: imagePath);
+    getNotes();
+  }
+
+  Future<void> deleteNote(int id) async {
     await noteService.deleteNote(id);
     getNotes();
   }
-  onInit() {
+
+  @override
+  void onInit() {
     super.onInit();
     getNotes();
   }

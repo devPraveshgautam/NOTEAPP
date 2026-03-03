@@ -22,34 +22,84 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var noteController = Get.find<NoteController>();
     return Scaffold(
-      appBar: AppBar(title: Text('Note App'), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Obx(() => noteController.isGettingNotes.value? Center(child: CircularProgressIndicator()) :
-          ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: noteController.noteModelList.length,
-            itemBuilder: (context, index) {
-              var note = noteController.noteModelList[index];
-              return NoteCard(
-                title: note.title ?? 'No Title',
-                description:
-                    note.description ??
-                    'No Description',
-                    id: note.id ?? 0,
-              );
-            },
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('Note App'),
+        centerTitle: true,
+        elevation: 0,
       ),
+      body: Obx(() {
+        if (noteController.isGettingNotes.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final notes = noteController.noteModelList;
+        final width = MediaQuery.of(context).size.width;
+        
+        if (notes.isEmpty) {
+          return const Center(
+            child: Text(
+              'No notes yet\nTap + to create one',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          );
+        }
+        
+        if (width > 600) {
+          // tablets / landscape: grid layout
+          return Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: GridView.builder(
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.3,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: notes.length,
+              itemBuilder: (context, index) {
+                var note = notes[index];
+                return NoteCard(
+                  title: note.title ?? 'No Title',
+                  description: note.description ?? 'No Description',
+                  displayIndex: index + 1,
+                  noteId: note.id ?? 0,
+                  imagePath: note.imagePath,
+                );
+              },
+            ),
+          );
+        }
+        
+        // phone / narrow screens: list
+        return ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          itemCount: notes.length,
+          itemBuilder: (context, index) {
+            var note = notes[index];
+            return NoteCard(
+              title: note.title ?? 'No Title',
+              description: note.description ?? 'No Description',
+              displayIndex: index + 1,
+              noteId: note.id ?? 0,
+              imagePath: note.imagePath,
+            );
+          },
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => FormScreen()),
-          );
+          ).then((changed) {
+            if (changed == true) {
+              noteController.getNotes();
+            }
+          });
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

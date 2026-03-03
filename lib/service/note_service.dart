@@ -17,11 +17,20 @@ class NoteService {
     // return data;
   }
 
-  Future<void> addNote(String title, String description) async {
+  Future<void> addNote(String title, String description, {String? imagePath}) async {
     try {
-      await dbhelper.insertData(title, description);
+      await dbhelper.insertData(title, description, imagePath: imagePath);
     } catch (e) {
       Get.snackbar("Error", e.toString(), duration: Duration(seconds: 1));
+    }
+  }
+
+  Future<int> updateNote(int id, String title, String description, {String? imagePath}) async {
+    try {
+      return await dbhelper.updateData(id, title, description, imagePath: imagePath);
+    } catch (e) {
+      Get.snackbar("Error", e.toString(), duration: Duration(seconds: 1));
+      return 0;
     }
   }
 
